@@ -9,7 +9,7 @@ def encode(img, msg):
   #TODO: You need to convert the RGB to binary
   #Then we will adjust the pixels to encode the message binary value into the last bit.
   #Each letter will take three pixels, with a spare pixel unchanged.
-  pixels = img.load() # pixesls is the pixel map, 2-d list of data
+  pixels = img.load() # pixels is the pixel map, 2-d list of data
   width, height = img.size
   letterSpot = 0
   pixel = 0
@@ -97,29 +97,64 @@ def numberToBinary(num):
   """Takes a base10 number and converts to a binary string with 8 bits"""
   binary = ""
   #Convert from decimal to binary
+  while num > 0:
+    binary = str(num % 2) + binary
+    num = num//2
 
+  while len(binary) < 8:
+    binary = "0" + binary
 
   return binary
 
 def binaryToNumber(bin):
   """Takes a string binary value and converts it to a base10 integer."""
   decimal = 0
+  value = 1
 
+  while len(bin) > 0:
+    lastSpot = len(bin) - 1
+    lastDigit = bin[lastSpot]
+
+    if lastDigit == '1':
+      decimal = decimal + value
+
+    value = value * 2
+
+    bin = bin[0:lastSpot]
 
   return decimal
 
-def main():
-  #Ask user if they want to encode/decode
-  myImg = Image.open('pki.png')
-  myMsg = "This is a secret message I will hide in an image."
+def runEncode(imageChoice, msg):
+  myImg = Image.open(imageChoice)
+  myMsg = msg
   encode(myImg, myMsg)
   myImg.close()
 
-  """
-  yourImg = Image.open('secretImg.png')
+def runDecode(imageChoice):
+  yourImg = Image.open(imageChoice)
   msg = decode(yourImg)
   print(msg)
-  """
+
+def main():
+  #Ask user if they want to encode/decode
+  action = input("Do you want to encode a message or decode a message? Type E or D: ")
+  
+  action = str.lower(action)
+
+  if action == "e":
+    userImage = input("Enter your image: ")
+    userImage = str(userImage)
+    message = input("Enter your message: ")
+    message = str(message)
+    runEncode(userImage, message)
+  elif action == "d":
+    userImage = input("Enter your image: ")
+    userImage = str(userImage)
+    runDecode(userImage)
+  else:
+    print("Invalid entry, please try again.")
+  
+
     
 if __name__ == '__main__':
   main()
